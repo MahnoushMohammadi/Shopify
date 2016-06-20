@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html manifest="manifest.appcache">
+
+<head><title>order</title>
+  <!--Adjusting the page on mobile screen  -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta charset="utf-8" >
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/jquery.mobile-1.4.5.css"/>
+
+  <script src="scripts/jquery-1.12.4.js"></script>
+  <script src="scripts/chromeFileProtocolFix.js"></script>
+  <script src="scripts/jquery.mobile-1.4.5.js"></script>
+
+  <style> 
+  button:hover { background-color: yellow} 
+  button {width: 250px; height: 30px; border-radius: 3px; font-size: 20px; font: bold; margin-left: 100px}
+  select {width: 250px; height: 100px; font-size: 30px; margin-left: 100px}
+  .header {  top:0px; width: 100%; text-align:center;  }
+  
+  table {border:1px solid black; width: 100%; height: 50%}
+  
+ </style>
+ 
+  </head>
+
+
+<body>
+  
+  <!-- Start of order summary page -->
+  <div data-role="page" id="page1"  >
+    <div data-role="header" class="header">
+      <h1>Welcome to our Web page</h1>      
+    </div>      
+    <div data-role="content">
+      <form><h3>Please select your Item</h3>
+        <select name="object" id="object"></select>
+        <button id="show" onclick="order_summary('object')">Show Order Summary</button>
+    <br/><br/>
+
+        <table id="table">
+             <tr id="r1">
+                <th>Glass<br>
+                  Price: Free
+                </th>
+               <td id="r1d2"> <img src="Pictures/glass.jpeg" id="glass"> </td>
+               <th>TV<br>
+                Price : 200 $<br>
+                Discount : 20 %
+               </th>
+              <td id="r2d2"><img src="Pictures/tv.jpeg" id="tv"> </td>
+            </tr>
+            
+            <tr id="r3">
+             <th>Rug<br>
+              Price : 90 $<br>
+              On Sale
+
+             </th>
+             <td id="r3d2"><img src="Pictures/rug.jpeg" id="rug"> </td>
+             <th>Table<br>
+              Price : 70 $<br>
+              On Sale
+
+             </th>
+             <td id="r4d2"><img src="Pictures/table.jpeg" id="table"> </td>
+            </tr>
+            
+          </table>    
+      </form>
+    </div>
+ 
+  </div> 
+
+
+
+
+<script>
+
+
+ html = "";
+ obj = {
+   "0" : "Please select",
+   "1" : "Glasses",
+   "2" : "TV",
+   "3" : "Rug",
+   "4" : "Table"
+        }
+
+ for(var key in obj) {
+
+   html += "<option value=" + key  + ">" +obj[key] + "</option>"
+   }
+ document.getElementById("object").innerHTML = html;
+
+
+ function order_summary(order_object) {
+
+  var t = document.getElementById("object").value;
+  var r = t-1;
+        // alert(r);  
+  
+  var order_object = [ 
+  {
+    "id" : "1",
+    "titlename" : "Glasses",
+    "price_level": "free",
+    "price" : 20,
+    "tax" : 3
+  },
+  {
+    "id" : "2",
+    "titlename" : "TV",
+    "price_level": "discount",
+    "discount_percentage" : 0.2,
+    "price" : 200,
+    "tax" : 30
+  },
+  {
+    "id" : "3",
+    "titlename" : "Rug",
+    "price_level": "sale",
+    "markdown" : 30,
+    "price" : 90,
+    "tax" : 18
+  } ,
+  {
+    "id" : "4",
+    "titlename" : "Table",
+    "price_level": "sale",
+    "markdown" : 10,
+    "price" : 70,
+    "tax" : 12
+  } 
+
+  ];
+
+
+  var x, y;
+
+  if (order_object[r].price_level == "free") {
+    x= 0;
+  } else if (order_object[r].price_level == "discount") {
+    x =  order_object[r].price - (order_object[r].discount_percentage * order_object[r].price);
+  } else if (order_object[r].price_level == "sale") {
+    x =  order_object[r].price - order_object[r].markdown;
+  } else {
+    x = order_object[r].price;
+  }
+
+  var subtotal_str;  
+  if (order_object[r].price_level == "free") {
+    subtotal_str = "Subtotal: This order is free";
+  } else {
+    subtotal_str = "Subtotal: " + " $ " + x;
+  }
+
+
+  var order = [{"taxes_applicable" : "true"}, {"taxes_applicable" : "false"}];
+  if(order_object[r].price < 100){
+    order.taxes_applicable = true;
+  }
+
+
+
+  if (order.taxes_applicable == true) {
+    y = order_object[r].tax;
+  } else {
+    y = 0;
+  }
+  var tax_str;
+  tax_str = y;
+
+  var total_amount = x+y;
+
+  var total_str = "Order total: " + " $ " + total_amount;
+
+  
+
+var myWindow = window.open("", "Summary", "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=350,width=400,height=400");
+myWindow.document.title = "test" ;
+
+myWindow.document.write("<title>Order Summary</title><h1> Order Summary </h1> <p> Product:  " + order_object[r].titlename + "</p><p> " + subtotal_str + "</p><p> Tax: " + tax_str + "</p><p> " + total_str + "</p>");
+
+}
+
+
+
+    </script>
+
+</body>
+</html>
+
